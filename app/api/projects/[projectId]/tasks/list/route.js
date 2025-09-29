@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 export const runtime = 'nodejs'; // <-- NOT edge
 export const maxDuration = 60; // optional: allow longer work
 export const dynamic = 'force-dynamic';
+export const preferredRegion = ['sin1']; // Singapore
 
 // 获取项目的所有任务列表
 export async function GET(request, { params }) {

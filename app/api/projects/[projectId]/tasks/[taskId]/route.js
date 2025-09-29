@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 export const runtime = 'nodejs'; // <-- NOT edge
 export const maxDuration = 60; // optional: allow longer work
 export const dynamic = 'force-dynamic';
+export const preferredRegion = ['sin1']; // Singapore
 
 // const prisma = new PrismaClient();
 

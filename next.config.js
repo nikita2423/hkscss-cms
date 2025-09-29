@@ -2,7 +2,8 @@
 module.exports = {
   experimental: {
     serverComponentsExternalPackages: ['@opendocsg/pdf2md', 'pdfjs-dist', '@hyzyla/pdfium'],
-    esmExternals: 'loose'
+    esmExternals: 'loose',
+    regions: ['sin1'] // Singapore
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
