@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const ALLOW = new Set(['http://localhost:3000']); // allowed caller(s)
+const ALLOW = new Set(['http://localhost:3000', 'https://hkscss-dataset-generator.vercel.app']); // allowed caller(s)
 
 export function middleware(req) {
   const origin = req.headers.get('origin') ?? '';
