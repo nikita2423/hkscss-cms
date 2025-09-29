@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+
+import { db } from '@/lib/db';
+export const runtime = 'nodejs'; // <-- NOT edge
+export const maxDuration = 60; // optional: allow longer work
+export const dynamic = 'force-dynamic';
 
 // 获取项目的所有任务列表
 export async function GET(request, { params }) {
@@ -29,10 +34,10 @@ export async function GET(request, { params }) {
     }
 
     // 获取任务总数
-    const total = await prisma.task.count({ where });
+    const total = await db.task.count({ where });
 
     // 获取任务列表，按创建时间降序排序，并应用分页
-    const tasks = await prisma.task.findMany({
+    const tasks = await db.task.findMany({
       where,
       orderBy: {
         createAt: 'desc'

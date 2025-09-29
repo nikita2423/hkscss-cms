@@ -1,15 +1,14 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "darwin-arm64", "darwin", "windows", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x", "debian-openssl-1.1.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = "postgresql://neondb_owner:npg_Jjop0sNzUwq2@ep-plain-recipe-a1imovkg-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 }
 
 model Projects {
-  id                   String        @id @default(nanoid(12))
+  id                   String        @id @default(cuid())
   name                 String
   description          String
   globalPrompt         String        @default("")
@@ -33,7 +32,7 @@ model Projects {
 }
 
 model UploadFiles {
-  id        String    @id @default(nanoid())
+  id        String    @id @default(cuid())
   project   Projects  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
   fileName  String
@@ -47,7 +46,7 @@ model UploadFiles {
 }
 
 model Chunks {
-  id        String      @id @default(nanoid())
+  id        String      @id @default(cuid())
   name      String
   project   Projects    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
@@ -64,7 +63,7 @@ model Chunks {
 }
 
 model Tags {
-  id        String   @id @default(nanoid())
+  id        String   @id @default(cuid())
   label     String
   project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
@@ -74,7 +73,7 @@ model Tags {
 }
 
 model Questions {
-  id        String   @id @default(nanoid())
+  id        String   @id @default(cuid())
   project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
   chunk     Chunks   @relation(fields: [chunkId], references: [id])
@@ -91,7 +90,7 @@ model Questions {
 }
 
 model Datasets {
-  id            String   @id @default(nanoid())
+  id            String   @id @default(cuid())
   project       Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId     String
   questionId    String
@@ -123,7 +122,7 @@ model LlmProviders {
 }
 
 model LlmModels {
-  id         String       @id @default(nanoid())
+  id         String       @id @default(cuid())
   modelId    String
   modelName  String
   provider   LlmProviders @relation(fields: [providerId], references: [id])
@@ -133,7 +132,7 @@ model LlmModels {
 }
 
 model ModelConfig {
-  id           String   @id @default(nanoid())
+  id           String   @id @default(cuid())
   project      Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId    String
   providerId   String
@@ -153,7 +152,7 @@ model ModelConfig {
 }
 
 model Task {
-  id             String    @id @default(nanoid())
+  id             String    @id @default(cuid())
   project        Projects  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId      String
   taskType       String // 任务类型: text-processing, question-generation, answer-generation, data-distillation
@@ -173,7 +172,7 @@ model Task {
 }
 
 model GaPairs {
-  id            String      @id @default(nanoid())
+  id            String      @id @default(cuid())
   project       Projects    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId     String
   uploadFile    UploadFiles @relation(fields: [fileId], references: [id], onDelete: Cascade)

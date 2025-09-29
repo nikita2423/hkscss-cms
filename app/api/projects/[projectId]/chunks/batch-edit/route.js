@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { db } from '@/lib/db';
+export const runtime = 'nodejs'; // <-- NOT edge
+export const maxDuration = 60; // optional: allow longer work
+export const dynamic = 'force-dynamic';
+
+// const prisma = new PrismaClient();
 
 /**
  * 批量编辑文本块内容
@@ -23,7 +28,7 @@ export async function POST(request, { params }) {
     }
 
     // 验证项目权限（获取要编辑的文本块）
-    const chunksToUpdate = await prisma.chunks.findMany({
+    const chunksToUpdate = await db.chunks.findMany({
       where: {
         id: { in: chunkIds },
         projectId: projectId
@@ -76,7 +81,7 @@ export async function POST(request, { params }) {
     }
 
     const BATCH_SIZE = 50; // 每批处理 50 个
-    await processBatches(updates, BATCH_SIZE, update => prisma.chunks.update(update));
+    await processBatches(updates, BATCH_SIZE, update => db.chunks.update(update));
 
     // 记录操作日志（可选）
     console.log(`Successfully updated ${chunksToUpdate.length} chunks`);
@@ -97,6 +102,6 @@ export async function POST(request, { params }) {
       { status: 500 }
     );
   } finally {
-    await prisma.$disconnect();
+    await db.$disconnect();
   }
 }

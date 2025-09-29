@@ -1,6 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const { PrismaClient } = require('@prisma/client');
+// const { PrismaClient } = require('@prisma/client');
+
+import { db } from '@/lib/db';
+export const runtime = 'nodejs'; // <-- NOT edge
+export const maxDuration = 60; // optional: allow longer work
+export const dynamic = 'force-dynamic';
 
 /**
  * 执行SQL命令
@@ -23,16 +28,16 @@ async function executeSql(dbUrl, sql) {
   process.env.DATABASE_URL = dbUrl;
 
   // 创建Prisma实例
-  const prisma = new PrismaClient();
+  // const prisma = new PrismaClient();
 
   try {
     // 执行每条SQL语句
     for (const statement of statements) {
-      await prisma.$executeRawUnsafe(statement);
+      await db.$executeRawUnsafe(statement);
     }
   } finally {
     // 关闭连接
-    await prisma.$disconnect();
+    await db.$disconnect();
   }
 }
 

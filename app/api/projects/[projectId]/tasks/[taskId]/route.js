@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
+import { db } from '@/lib/db';
+export const runtime = 'nodejs'; // <-- NOT edge
+export const maxDuration = 60; // optional: allow longer work
+export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 // 获取任务详情
 export async function GET(request, { params }) {
@@ -20,7 +24,7 @@ export async function GET(request, { params }) {
     }
 
     // 查询任务详情
-    const task = await prisma.task.findUnique({
+    const task = await db.task.findUnique({
       where: {
         id: taskId,
         projectId
@@ -104,7 +108,7 @@ export async function PATCH(request, { params }) {
     }
 
     // 更新任务
-    const updatedTask = await prisma.task.update({
+    const updatedTask = await db.task.update({
       where: {
         id: taskId
       },
@@ -146,7 +150,7 @@ export async function DELETE(request, { params }) {
     }
 
     // 删除任务
-    await prisma.task.delete({
+    await db.task.delete({
       where: {
         id: taskId,
         projectId
