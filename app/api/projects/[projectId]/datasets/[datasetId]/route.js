@@ -51,7 +51,7 @@ export async function PATCH(request, { params }) {
     }
 
     const body = await request.json();
-    const { score, tags, note } = body;
+    const { score, tags, note, answer } = body;
 
     // 验证评分范围
     if (score !== undefined && (score < 0 || score > 5)) {
@@ -64,7 +64,7 @@ export async function PATCH(request, { params }) {
     }
 
     // 更新数据集元数据
-    const updatedDataset = await updateDatasetMetadata(datasetId, { score, tags, note });
+    const updatedDataset = await updateDatasetMetadata(datasetId, { score, tags, note, answer });
 
     return NextResponse.json({
       success: true,
