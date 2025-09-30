@@ -277,8 +277,9 @@ export async function POST(request, { params }) {
     const fileBuffer = Buffer.from(await request.arrayBuffer());
 
     // 保存文件
-    const projectRoot = await getProjectRoot();
-    const projectPath = path.join(projectRoot, projectId);
+    const basePath = process.env.VERCEL ? '/tmp' : await getProjectRoot();
+    // const projectRoot = await getProjectRoot();
+    const projectPath = path.join(basePath, projectId);
     const filesDir = path.join(projectPath, 'files');
 
     await ensureDir(filesDir);
