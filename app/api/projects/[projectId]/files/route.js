@@ -278,15 +278,15 @@ export async function POST(request, { params }) {
     const fileBuffer = Buffer.from(await request.arrayBuffer());
 
     // 保存文件
-    // const basePath = process.env.VERCEL ? '/tmp' : await getProjectRoot();
-    // // const projectRoot = await getProjectRoot();
-    // const projectPath = path.join(basePath, projectId);
-    // const filesDir = path.join(projectPath, 'files');
+    const basePath = process.env.VERCEL ? '/tmp' : await getProjectRoot();
+    // const projectRoot = await getProjectRoot();
+    const projectPath = path.join(basePath, projectId);
+    const filesDir = path.join(projectPath, 'files');
 
-    // await ensureDir(filesDir);
+    await ensureDir(filesDir);
 
-    // const filePath = path.join(filesDir, fileName);
-    // await fs.writeFile(filePath, fileBuffer);
+    const filePath = path.join(filesDir, fileName);
+    await fs.writeFile(filePath, fileBuffer);
     //获取文件大小
     const stats = await fs.stat(filePath);
     //获取文件md5
@@ -318,13 +318,13 @@ export async function POST(request, { params }) {
     //   });
     // }
 
-    const basePath = await getProjectRoot();
-    const projectPath = path.join(basePath, projectId);
-    const filesDir = path.join(projectPath, 'files');
-    await ensureDir(filesDir);
+    // const basePath = await getProjectRoot();
+    // const projectPath = path.join(basePath, projectId);
+    // const filesDir = path.join(projectPath, 'files');
+    // await ensureDir(filesDir);
 
-    const filePath = path.join(filesDir, fileName);
-    await fs.writeFile(filePath, buf);
+    // const filePath = path.join(filesDir, fileName);
+    // await fs.writeFile(filePath, buf);
 
     // let res = await checkUploadFileInfoByMD5(projectId, md5);
     // if (res) {
