@@ -21,7 +21,7 @@ export async function POST(request, { params }) {
     }
 
     // 获取项目根目录
-    const projectRoot = await getProjectRoot();
+    const projectRoot = process.env.VERCEL ? '/tmp' : await getProjectRoot();
     const projectPath = path.join(projectRoot, projectId);
 
     // 检查项目是否存在
