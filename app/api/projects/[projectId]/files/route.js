@@ -294,29 +294,29 @@ export async function POST(request, { params }) {
     //获取文件扩展名
     const ext = path.extname(filePath);
 
-    if (process.env.VERCEL) {
-      const objectKey = `${projectId}/${Date.now()}-${fileName}`;
-      const contentType = ext === '.pdf' ? 'application/pdf' : 'text/markdown';
+    // if (process.env.VERCEL) {
+    //   const objectKey = `${projectId}/${Date.now()}-${fileName}`;
+    //   const contentType = ext === '.pdf' ? 'application/pdf' : 'text/markdown';
 
-      const { url } = await put(objectKey, buf, { access: 'public', contentType });
+    //   const { url } = await put(objectKey, buf, { access: 'public', contentType });
 
-      // Save URL so background task can fetch it later
-      const fileInfo = await createUploadFileInfo({
-        projectId,
-        fileName,
-        size,
-        md5,
-        fileExt: ext,
-        path: url // ← store public URL (not a local path)
-      });
+    //   // Save URL so background task can fetch it later
+    //   const fileInfo = await createUploadFileInfo({
+    //     projectId,
+    //     fileName,
+    //     size,
+    //     md5,
+    //     fileExt: ext,
+    //     path: url // ← store public URL (not a local path)
+    //   });
 
-      return NextResponse.json({
-        message: 'File uploaded successfully',
-        fileName,
-        url,
-        fileId: fileInfo.id
-      });
-    }
+    //   return NextResponse.json({
+    //     message: 'File uploaded successfully',
+    //     fileName,
+    //     url,
+    //     fileId: fileInfo.id
+    //   });
+    // }
 
     const basePath = await getProjectRoot();
     const projectPath = path.join(basePath, projectId);
