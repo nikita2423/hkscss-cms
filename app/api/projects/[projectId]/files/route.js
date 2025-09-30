@@ -13,6 +13,7 @@ import { getFileMD5 } from '@/lib/util/file';
 import { batchSaveTags } from '@/lib/db/tags';
 import { getProjectChunks, getProjectTocByName } from '@/lib/file/text-splitter';
 import { handleDomainTree } from '@/lib/util/domain-tree';
+import { put } from '@vercel/blob';
 
 // Replace the deprecated config export with the new export syntax
 export const dynamic = 'force-dynamic';
@@ -277,21 +278,53 @@ export async function POST(request, { params }) {
     const fileBuffer = Buffer.from(await request.arrayBuffer());
 
     // 保存文件
-    const basePath = process.env.VERCEL ? '/tmp' : await getProjectRoot();
-    // const projectRoot = await getProjectRoot();
-    const projectPath = path.join(basePath, projectId);
-    const filesDir = path.join(projectPath, 'files');
+    // const basePath = process.env.VERCEL ? '/tmp' : await getProjectRoot();
+    // // const projectRoot = await getProjectRoot();
+    // const projectPath = path.join(basePath, projectId);
+    // const filesDir = path.join(projectPath, 'files');
 
-    await ensureDir(filesDir);
+    // await ensureDir(filesDir);
 
-    const filePath = path.join(filesDir, fileName);
-    await fs.writeFile(filePath, fileBuffer);
+    // const filePath = path.join(filesDir, fileName);
+    // await fs.writeFile(filePath, fileBuffer);
     //获取文件大小
     const stats = await fs.stat(filePath);
     //获取文件md5
     const md5 = await getFileMD5(filePath);
     //获取文件扩展名
     const ext = path.extname(filePath);
+
+    if (process.env.VERCEL) {
+      const objectKey = `${projectId}/${Date.now()}-${fileName}`;
+      const contentType = ext === '.pdf' ? 'application/pdf' : 'text/markdown';
+
+      const { url } = await put(objectKey, buf, { access: 'public', contentType });
+
+      // Save URL so background task can fetch it later
+      const fileInfo = await createUploadFileInfo({
+        projectId,
+        fileName,
+        size,
+        md5,
+        fileExt: ext,
+        path: url // ← store public URL (not a local path)
+      });
+
+      return NextResponse.json({
+        message: 'File uploaded successfully',
+        fileName,
+        url,
+        fileId: fileInfo.id
+      });
+    }
+
+    const basePath = await getProjectRoot();
+    const projectPath = path.join(basePath, projectId);
+    const filesDir = path.join(projectPath, 'files');
+    await ensureDir(filesDir);
+
+    const filePath = path.join(filesDir, fileName);
+    await fs.writeFile(filePath, buf);
 
     // let res = await checkUploadFileInfoByMD5(projectId, md5);
     // if (res) {
