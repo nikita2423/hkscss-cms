@@ -5,6 +5,7 @@ import { getProjectRoot } from '@/lib/db/base';
 import { getTaskConfig } from '@/lib/db/projects';
 import { processTask } from '@/lib/services/tasks';
 import { db } from '@/lib/db/index';
+import { mkdir } from 'fs/promises';
 
 // 获取任务配置
 export async function GET(request, { params }) {
@@ -21,11 +22,13 @@ export async function GET(request, { params }) {
     const projectPath = path.join(projectRoot, projectId);
 
     // 检查项目是否存在
-    try {
-      await fs.access(projectPath);
-    } catch (error) {
-      return NextResponse.json({ error: 'Project does not exist' + projectPath }, { status: 404 });
-    }
+    // try {
+    //   await fs.access(projectPath);
+    // } catch (error) {
+    //   return NextResponse.json({ error: 'Project does not exist' + projectPath }, { status: 404 });
+    // }
+
+    await mkdir(projectPath, { recursive: true });
 
     const taskConfig = await getTaskConfig(projectId);
     return NextResponse.json(taskConfig);
@@ -58,11 +61,12 @@ export async function PUT(request, { params }) {
     const projectPath = path.join(projectRoot, projectId);
 
     // 检查项目是否存在
-    try {
-      await fs.access(projectPath);
-    } catch (error) {
-      return NextResponse.json({ error: 'Project does not exist' }, { status: 404 });
-    }
+    // try {
+    //   await fs.access(projectPath);
+    // } catch (error) {
+    //   return NextResponse.json({ error: 'Project does not exist' }, { status: 404 });
+    // }
+    await fs.mkdir(projectPath, { recursive: true });
 
     // 获取任务配置文件路径
     const taskConfigPath = path.join(projectPath, 'task-config.json');

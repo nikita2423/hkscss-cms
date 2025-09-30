@@ -18,11 +18,12 @@ export async function GET(request, { params }) {
     const projectPath = path.join(projectRoot, projectId);
 
     // 检查项目是否存在
-    try {
-      await fs.access(projectPath);
-    } catch (error) {
-      return NextResponse.json({ error: 'The project does not exist' }, { status: 404 });
-    }
+    // try {
+    //   await fs.access(projectPath);
+    // } catch (error) {
+    //   return NextResponse.json({ error: 'The project does not exist' }, { status: 404 });
+    // }
+    await fs.mkdir(projectPath, { recursive: true });
 
     // 获取模型配置文件路径
     const modelConfigPath = path.join(projectPath, 'model-config.json');

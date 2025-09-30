@@ -25,11 +25,12 @@ export async function POST(request, { params }) {
     const projectPath = path.join(projectRoot, projectId);
 
     // 检查项目是否存在
-    try {
-      await fs.access(projectPath);
-    } catch (error) {
-      return NextResponse.json({ error: 'Project does not exist' }, { status: 404 });
-    }
+    // try {
+    //   await fs.access(projectPath);
+    // } catch (error) {
+    //   return NextResponse.json({ error: 'Project does not exist' }, { status: 404 });
+    // }
+    await fs.mkdir(projectPath, { recursive: true });
 
     // 先删除该文件已有的文本块
     await deleteChunksByFileId(projectId, fileId);
